@@ -1,90 +1,80 @@
-/*
-Dichiara 3 variabili
-*/
-let grade = 0,
-    active = false,
-    interval;
-/*
-Dichiara la funzione rotate
-*/
-const rotate = () => {
-    // mette nella costante cubes tutti i div con classe cube -> ottiene un array
-    const cubes = document.querySelectorAll('.cube');
-    // per ogni elemento dell'array (ciascun div classe cube) applica la trasformazione css rotateY 
-    // di gradi uguale alla variabile grade. Attenzione alla sintassi usa l'interpolazione delle stringhe 
-    // che vuol dire che la stringa è delimitata dal back-stick (alt+96) e la variabile fra parentesi graffe
-    Array.from(cubes).forEach(cube => cube.style.transform = `rotateY(${grade}deg)`);
+//Aggancio i bottoni
+let leftBtn = document.querySelector(".left-arrow");
+let rightBtn = document.querySelector(".right-arrow");
+let rotateBtn = document.querySelector(".play");
+
+//Aggancio i tre cubi
+let cube1 = document.querySelector(".cube-1");
+let cube2 = document.querySelector(".cube-2");
+let cube3 = document.querySelector(".cube-3");
+
+//Definisco una variabile con posizione di partenza uguale a 0
+let position = 0;
+
+// Al click del bottone di sinistra modifico lo stile di tutti e 3 cubi facendoli ruotare sul suo asseY
+leftBtn.addEventListener("click", function () {
+  position -= 90;
+  cube1.style.transform = `rotateY(${position}deg)`;
+  cube2.style.transform = `rotateY(${position}deg)`;
+  cube3.style.transform = `rotateY(${position}deg)`;
+});
+
+rightBtn.addEventListener("click", function () {
+  position += 90;
+  cube1.style.transform = `rotateY(${position}deg)`;
+  cube2.style.transform = `rotateY(${position}deg)`;
+  cube3.style.transform = `rotateY(${position}deg)`;
+});
+
+/// Eventi mouseover e mouse per il BOTTONE DI SINISTRA che fanno ruotare l'immagine di soli 30deg
+leftBtn.addEventListener("mouseover", function () {
+  position -= 30;
+  cube1.style.transform = `rotateY(${position}deg)`;
+  cube2.style.transform = `rotateY(${position}deg)`;
+  cube3.style.transform = `rotateY(${position}deg)`;
+});
+
+leftBtn.addEventListener("mouseout", function () {
+  position += 30;
+  cube1.style.transform = `rotateY(${position}deg)`;
+  cube2.style.transform = `rotateY(${position}deg)`;
+  cube3.style.transform = `rotateY(${position}deg)`;
+});
+
+/// Eventi mouseover e mouse per il BOTTONE DI DESTRA che fanno ruotano l'immagine di soli 30deg
+rightBtn.addEventListener("mouseover", function () {
+  position += 30;
+  cube1.style.transform = `rotateY(${position}deg)`;
+  cube2.style.transform = `rotateY(${position}deg)`;
+  cube3.style.transform = `rotateY(${position}deg)`;
+});
+
+rightBtn.addEventListener("mouseout", function () {
+  position -= 30;
+  cube1.style.transform = `rotateY(${position}deg)`;
+  cube2.style.transform = `rotateY(${position}deg)`;
+  cube3.style.transform = `rotateY(${position}deg)`;
+});
+
+//Funzione per rotazione continua al Play
+function rotateContinue() {
+  position += 90;
+  cube1.style.transform = `rotateY(${position}deg)`;
+  cube2.style.transform = `rotateY(${position}deg)`;
+  cube3.style.transform = `rotateY(${position}deg)`;
 }
 
-//questa funzione invece semplicemente cambia solo la classe del pulsante cambiando l'icona via font-awesome
-const changePlayPause = () => {
-    const icon = document.querySelector('.play-pause i');
-    const iconClass = icon.classList[1];
-    if (iconClass === 'fa-play') {
-        icon.classList.remove('fa-play');
-        icon.classList.add('fa-pause');
-    } else {
-        icon.classList.remove('fa-pause');
-        icon.classList.add('fa-play');
-    }
-}
-// queste funzione controlla se la variabile active è true o false, se è true modifica la variabile grade (che è globale) 
-// e chiama la funzione rotate, attenzione che è setInterval, per cui ripete la modifica e la chiamata ogni secondo (1000 millisecondi)
-// l'else invece stoppa tutto cambia l'icona con la funzione apposita e cambia la variabile booleana
-const playPause = () => {
-    if (!active) {
-        interval = setInterval(() => {
-            grade -= 90;
-            rotate();
-        }, 1000);
-        changePlayPause();
-        active = true;
-    } else {
-        clearInterval(interval);
-        changePlayPause();
-        active = false;
-    }
+let startRotate = false;
 
-}
-//le funzioni che seguono invece fanno le stesse cose di quella di sopra ma associate all'evento
-document.querySelector('.left-arrow').addEventListener('click', () => {
-    grade += 90;
-    rotate();
-    if (active) {
-        playPause;
-    }
-});
-
-document.querySelector('.left-arrow').addEventListener('mouseover', () => {
-    grade += 25;
-    rotate();
-});
-
-document.querySelector('.left-arrow').addEventListener('mouseout', () => {
-    grade -= 25;
-    rotate();
-});
-
-
-
-document.querySelector('.right-arrow').addEventListener('click', () => {
-    grade -= 90;
-    rotate();
-    if (active) {
-        playPause;
-    }
-});
-
-document.querySelector('.right-arrow').addEventListener('mouseover', () => {
-    grade -= 25;
-    rotate();
-});
-
-document.querySelector('.right-arrow').addEventListener('mouseout', () => {
-    grade += 25;
-    rotate();
-});
-
-document.querySelector('.play-pause').addEventListener('click', () => {
-    playPause();
+rotateBtn.addEventListener("click", function (e) {
+  startRotate = !startRotate;
+  if (startRotate) {
+    rotate = setInterval(rotateContinue, 1000);
+    let btnIcon = e.target.childNodes[0];
+    btnIcon.classList.replace("fa-play", "fa-pause");
+  } else {
+    let btnIcon = e.target.childNodes[0];
+    btnIcon.classList.replace("fa-pause", "fa-play");
+    clearInterval(rotate);
+  }
 });
